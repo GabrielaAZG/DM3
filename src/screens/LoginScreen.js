@@ -1,12 +1,42 @@
 import React, {useState} from "react";
 import {View, Text, TextInput, SafeAreaView, Image, StyleSheet, Alert, Platform, BackHandler,TouchableOpacity} from "react-native";
+import {auth} from "../../firebase"; // 
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginScreen({navigation}){
     
     
 
-    const [user, setUser] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+
+   
+    const handleCreateAccount = async () =>{
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential)=>{
+            console.log("Account created");
+            const user = userCredential.user;
+            console.log(user);
+        })
+        .catch(error => {
+            console.log(error);
+            Alert.alert(error.message);
+        })
+    }
+
+    const handleSignIn = async () =>{
+        signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential)=>{
+            console.log("Signed in!");
+            const user = userCredential.user;
+            console.log(user);
+            navigation.replace("Principal Menu");
+        })
+        .catch(error => {
+            console.log(error);
+            Alert.alert(error.message);
+        })
+    }
 
     
           
@@ -26,9 +56,7 @@ export default function LoginScreen({navigation}){
    
    
 
-    const goToRegister = () => {
-        navigation.navigate("SignUp");
-    };
+    
 
     return(
         
@@ -39,16 +67,16 @@ export default function LoginScreen({navigation}){
             
             <View style={styles.container} >
                 
-                <TextInput style={styles.input} placeholder="USER" value= {user} onChangeText={setUser}/>
+                <TextInput style={styles.input} placeholder="USER" value= {email} onChangeText={setEmail}/>
                 <TextInput style={styles.inputp} placeholder="PASSWORD" value= {password} onChangeText={setPassword}/>
                 
             </View>
-            <View style={[styles.container,styles.buttonText]}>
-                <TouchableOpacity style={[styles.button,styles.buttonText]} >
+            <View style={[styles.container,styles.buttonText]} >
+                <TouchableOpacity style={[styles.button,styles.buttonText]} onPress={handleSignIn} >
                     <Text style={styles.buttonText}>LOGIN</Text>
                 </TouchableOpacity>
               
-                <TouchableOpacity style={styles.button} onPress={goToRegister}>
+                <TouchableOpacity style={styles.button} onPress={handleCreateAccount}>
                     <Text style={styles.buttonText}>SIGN UP</Text>
                 </TouchableOpacity>
             </View>
