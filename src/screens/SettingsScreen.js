@@ -1,21 +1,21 @@
 import React from "react";
 import {View, Text, SafeAreaView, StyleSheet,TouchableOpacity,ImageBackground} from "react-native";
-
-export default function PrincipalMenu(props){
+import {auth} from "../../firebase";
+export default function SettingsScreen({navigation}){
     
-    const {navigation} = props;
+    
     
 
-    const goToSearchAlbum = () =>{
-        navigation.navigate("Search Album");
-    }
-
-    const goToFavoriteAlbums = () =>{
-        navigation.navigate("Favorite Albums");
-    }
-    const goToSettings = () =>{
-        navigation.navigate("Settings");
-    }
+   
+    const signOut = () => {
+    auth
+      .signOut()
+      .then(() => {
+        console.log('User signed out!');
+        navigation.reset({ index: 0, routes: [{ name: "Login" }] });
+      })
+      .catch((error) => console.error('Sign-out error:', error));
+  };
 
     /*const goToOrder = () =>{
         navigation.navigate("Order");
@@ -37,14 +37,8 @@ export default function PrincipalMenu(props){
         <SafeAreaView>
 
             <View style={styles.container}>
-                <TouchableOpacity style={styles.buttoni} onPress={goToSearchAlbum}>
-                    <Text style={styles.buttonText}>Search</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttoni} onPress={goToFavoriteAlbums}>
-                    <Text style={styles.buttonText}>Favorite Albums</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttoni} onPress={goToSettings}>
-                    <Text style={styles.buttonText}>Settings</Text>
+                <TouchableOpacity style={styles.buttoni} onPress={signOut}>
+                    <Text style={styles.buttonText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
             
