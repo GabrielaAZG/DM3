@@ -7,6 +7,9 @@ import Favorite from "../screens/FavoriteAlbums";
 import DetailFavorite from "../screens/DetailFavoriteAlbum";
 import EditFavorite from "../screens/EditFavoriteAlbum";
 import Settings from "../screens/SettingsScreen";
+import AddScreen from "../screens/AddScreen";
+import EditScreen from "../screens/EditScreen";
+import ListeningScreen from "../screens/ListeningLists";
 const Stack = createNativeStackNavigator();
 
 export default function NavigationBooks(){
@@ -20,7 +23,11 @@ export default function NavigationBooks(){
             <Stack.Screen name="Favorite Albums" component={Favorite}/>
             <Stack.Screen name="Details" component={DetailFavorite}/>
             <Stack.Screen name="Edit" component={EditFavorite}/>
-             <Stack.Screen name="Settings" component={Settings}/>
+            <Stack.Screen name="Settings" component={Settings}/>
+            <Stack.Screen name="List" component={ListeningScreen}/>
+            <Stack.Screen name="Add" component={AddScreen}/>
+            <Stack.Screen name="Edit Album" component={EditScreen}/>
+            
             
         </Stack.Navigator>
     );

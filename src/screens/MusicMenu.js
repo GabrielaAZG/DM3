@@ -13,6 +13,9 @@ export default function PrincipalMenu(props){
     const goToFavoriteAlbums = () =>{
         navigation.navigate("Favorite Albums");
     }
+     const goToList = () =>{
+        navigation.navigate("List");
+    }
     const goToSettings = () =>{
         navigation.navigate("Settings");
     }
@@ -42,6 +45,9 @@ export default function PrincipalMenu(props){
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttoni} onPress={goToFavoriteAlbums}>
                     <Text style={styles.buttonText}>Favorite Albums</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttoni} onPress={goToList}>
+                    <Text style={styles.buttonText}>List</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttoni} onPress={goToSettings}>
                     <Text style={styles.buttonText}>Settings</Text>
