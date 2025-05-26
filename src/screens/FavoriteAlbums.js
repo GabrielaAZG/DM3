@@ -1,98 +1,128 @@
 import React, {useState, useEffect} from "react";
 import {View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView} from "react-native";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { db } from "../../firebase";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import {Ionicons} from "@expo/vector-icons";
+
+export default function FavoriteAlbum({navigation}) {
+        const [albums, setAlbums] = useState(''); //...
+        const [loading, setLoading] = useState(true);
+        const [refreshing, setRefreshing] = useState(false);
+        const [user, setUser] = useState(null);
+        
 
 
-
-
-export default function FavoriteAlbum({navigation}){
-    const [albums, setAlbums] = useState(''); //...
-
-    const deleteAlbum = async (albumId) => {
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (!user) {
-            alert("Debes iniciar sesión.");
-            return;
-        }
-
-        try {
-            // Elimina el documento específico del álbum
-            await deleteDoc(doc(db, "users", user.uid, "favorite_albums", albumId));
-
-            // Actualiza la lista local eliminando el álbum
-            setAlbums(prev => prev.filter(album => album.id !== albumId));
-
-            alert("Álbum eliminado.");
-        } catch (error) {
-            console.error("Error al eliminar álbum:", error);
-            alert("Error al eliminar el álbum.");
-        }
-    };
-
-    useEffect(() => {
-        const fetchAlbums = async () => {
+        // Escuchar cambios en la autenticación
+        useEffect(() => {
             const auth = getAuth();
-            const user = auth.currentUser;
+            const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+                setUser(currentUser);
+                if (currentUser) {
+                    fetchAlbums(currentUser);
+                } else {
+                    setAlbums([]);
+                    setLoading(false);
+                }
+            });
 
-            if (!user) {
-                console.log("Usuario no autenticado");
+            return unsubscribeAuth;
+        }, []);
+
+        // Recargar cuando la pantalla obtiene foco
+        useEffect(() => {
+            const unsubscribe = navigation.addListener('focus', () => {
+                const auth = getAuth();
+                const currentUser = auth.currentUser;
+                if (currentUser) {
+                    fetchAlbums(currentUser);
+                }
+            });
+
+            return unsubscribe;
+        }, [navigation]);
+
+        const fetchAlbums = async (currentUser) => {
+            try {
+                setRefreshing(true);
+                setLoading(true);
+
+                if (!currentUser) {
+                    throw new Error("Usuario no autenticado");
+                }
+
+                const querySnapshot = await getDocs(
+                    collection(db, "users", currentUser.uid, "favorite_albums")
+                );
+
+                const fetchedAlbums = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    artworkUrl100: doc.data().artworkUrl100,
+                    collectionName: doc.data().collectionName
+                }));
+
+                setAlbums(fetchedAlbums);
+            } catch (error) {
+                console.error("Error al obtener álbumes:", error);
+                alert("Error al cargar los álbumes");
+            } finally {
+                setLoading(false);
+                setRefreshing(false);
+            }
+        };
+
+        const deleteAlbum = async (albumId) => {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+            if (!currentUser) {
+                alert("Debes iniciar sesión.");
                 return;
             }
 
             try {
-                const querySnapshot = await getDocs(collection(db, "users", user.uid, "favorite_albums"));
-                const fetchedAlbums = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    artworkUrl100: doc.data().artworkUrl100, // ajustar si tu propiedad es artworkUrl
-                    collectionName: doc.data().collectionName
-                }));
-                setAlbums(fetchedAlbums);
+                await deleteDoc(doc(db, "users", currentUser.uid, "favorite_albums", albumId));
+                setAlbums(prev => prev.filter(album => album.id !== albumId));
             } catch (error) {
-                console.error("Error al obtener álbumes:", error);
+                console.error("Error al eliminar álbum:", error);
+                alert("Error al eliminar el álbum.");
             }
         };
 
-        fetchAlbums();
-    }, []);
-    
 
-    const renderAlbum = ({item}) => (
-        
-        <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Details', {album: item})}>
-            <Image source={{uri: item.artworkUrl100}} style={styles.image}/>
-            <Text style={styles.albumTitle}>{item.collectionName}</Text>
-            <View style={styles.actionButtons}>
-                <TouchableOpacity style={[styles.iconButton, { backgroundColor: "gray" }]}
-                                  onPress={() => navigation.navigate('Edit', {album: item, setAlbums})}>
-                    <Text style={styles.icon}>✎</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.iconButton, { backgroundColor: "#EF233C" }]} onPress={() => deleteAlbum(item.id)}>
-                    <Text style={styles.icon}>✘</Text>
-                </TouchableOpacity>
-            </View>
+        const renderAlbum = ({item}) => (
 
-        </TouchableOpacity>
-    );
+            <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Details', {album: item})}>
+                <Image source={{uri: item.artworkUrl100}} style={styles.image}/>
+                <Text style={styles.albumTitle}>{item.collectionName}</Text>
+                <View style={styles.actionButtons}>
+                    <TouchableOpacity style={[styles.iconButton]}
+                                      onPress={() => navigation.navigate('Edit', {album: item, setAlbums})}>
+                        <Ionicons name="create-outline" size={24} color="#004555"/>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.iconButton} onPress={() => deleteAlbum(item.id)}>
+                        <Ionicons name="trash-outline" size={24} color="#F44336"/>
+                    </TouchableOpacity>
+                </View>
 
-    return(
-        
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.screenTitle}>♥</Text>
-            <FlatList
-            data={albums}
-            renderItem={renderAlbum}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={{ paddingBottom: 100 }}
-            />
-        </SafeAreaView>
-    );
+            </TouchableOpacity>
+        );
 
-}
+        return (
+
+            <SafeAreaView style={styles.container}>
+                <Text style={styles.screenTitle}>♥</Text>
+                <FlatList
+                    data={albums}
+                    renderItem={renderAlbum}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={{paddingBottom: 100}}
+                />
+            </SafeAreaView>
+        );
+
+    }
+
 
 const styles = StyleSheet.create({
     container: {

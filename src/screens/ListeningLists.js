@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from "react";
-import {View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView} from "react-native";
+import {View, Text, FlatList, Image, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicator, RefreshControl,} from "react-native";
 import { getAuth } from "firebase/auth";
 import { db } from "../../firebase";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
-
-
+import { Ionicons } from "@expo/vector-icons";
 
 
 export default function ListeningLists({navigation}){
@@ -77,13 +76,16 @@ export default function ListeningLists({navigation}){
             <Text style={styles.title}>{item.artist}</Text>
             <Text style={styles.title}>{item.estimatedDate}</Text>
             <Text style={styles.title}>{item.status}</Text>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('Edit Album', {album: item})}>
-                    <Text style={styles.buttonText}>🖋️</Text>
+            <View>
+            <View style={styles.buttonsContainer}>
+                <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Edit Album', {album: item})}>
+                    <Ionicons name="create-outline" size={24} color="#004555" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteAlbum(item.id)}>
-                    <Text style={styles.buttonText}>🗑️</Text>
+                
+                <TouchableOpacity style={styles.iconButton} onPress={() => deleteAlbum(item.id)}>
+                    <Ionicons name="trash-outline" size={24} color="#F44336" />
                 </TouchableOpacity>
+            </View>
             </View>
 
         </TouchableOpacity>
@@ -92,7 +94,7 @@ export default function ListeningLists({navigation}){
     return(
         
         <SafeAreaView style={styles.container}>
-            <Text>Albums to check out ...</Text>
+            <Text >Albums to check out ...</Text>
             <View>
             <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('Add')}>
                 <Text style={styles.addButtonText}>╋</Text>
@@ -109,57 +111,119 @@ export default function ListeningLists({navigation}){
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1, 
-        backgroundColor: '#fff',
-        padding: 10
+    gradient: {
+        flex: 1,
+    },
+    safeArea: {
+        flex: 1,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: "#333",
+    },
+    headerTitle: {
+        fontSize: 24,
+        fontWeight: "bold",
+        color: "#FFFFFF",
+    },
+    addButton: {
+        backgroundColor: "#1DB954",
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    listContent: {
+        paddingHorizontal: 15,
+        paddingBottom: 20,
     },
     card: {
-        marginBottom: 20,
-        backgroundColor: '#f8f8f8',
+        backgroundColor: "#979797",
         borderRadius: 10,
-        overflow: 'hidden',
-        borderColor: '#ddd',
-        borderWidth: 1
-    }, 
-    image: {
-        width: '100%',
-        height: 150
+        marginVertical: 8,
+        padding: 15,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 3,
+        elevation: 3,
+    },
+    cardContent: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    albumInfo: {
+        flex: 1,
+        marginRight: 10,
     },
     title: {
         fontSize: 18,
-        fontWeight:'bold',
-        padding: 10
+        fontWeight: "bold",
+        color: "#FFFFFF",
+        marginBottom: 4,
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 10
+    artist: {
+        fontSize: 16,
+        color: "#B3B3B3",
+        marginBottom: 8,
     },
-    editButton: {
-        backgroundColor: '#4CAF50',
-        padding: 10,
-        borderRadius: 5
+    detailRow: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 4,
     },
-    deleteButton: {
-        backgroundColor: '#F44336',
-        padding: 10,
-        borderRadius: 5
+    detailText: {
+        fontSize: 14,
+        color: "#B3B3B3",
+        marginLeft: 6,
     },
-    buttonText: {
-        color: '#fff',
-        fontWeight: 'bold'
+    buttonsContainer: {
+        flexDirection: "row",
     },
-    addButton: {
-        backgroundColor: '#2196F3',
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 20
+    iconButton: {
+        marginLeft: 15,
+    },
+    emptyState: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 40,
+    },
+    emptyText: {
+        fontSize: 22,
+        fontWeight: "bold",
+        color: "#FFFFFF",
+        marginTop: 20,
+        marginBottom: 8,
+    },
+    emptySubtext: {
+        fontSize: 16,
+        color: "#B3B3B3",
+        textAlign: "center",
+        marginBottom: 30,
+    },
+    addButtonLarge: {
+        backgroundColor: "#004555",
+        borderRadius: 25,
+        paddingVertical: 12,
+        paddingHorizontal: 30,
     },
     addButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        textAlign: 'center'
-    }
-
+        color: "#FFFFFF",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    
 });
