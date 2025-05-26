@@ -1,5 +1,5 @@
 import React , {useState} from "react";
-import {Linking, View, Text, Image, TouchableOpacity,Button, StyleSheet, SafeAreaView } from "react-native";
+import {Linking, View, Text, Image, TouchableOpacity, Button, StyleSheet, SafeAreaView, ScrollView} from "react-native";
 import {db} from "../../firebase";
 import {collection, addDoc, getDocs} from 'firebase/firestore';
 import { getAuth } from "firebase/auth";
@@ -40,22 +40,27 @@ export default function AlbumDetail({route, navigation}){
 
     return(
         <SafeAreaView style={styles.container}>
+            <ScrollView contentContainerStyle={styles.content}>
             <Image source={{uri: album.artworkUrl100}} style={styles.image}/>
                 
-            <Text>Artist: {album.artistName}</Text>
-            <Text>Genre: {album.primaryGenreName}</Text>
-            <Text>Songs: {album.trackCount}</Text>
-            <Text>Release Date: {new Date(album.releaseDate).toLocaleDateString()}</Text>
-            <Text>Price: ${album.collectionPrice}</Text>
+            <Text style={styles.artist}>Artist: {album.artistName}</Text>
+                <View style={styles.detailsBox} >
+                    <Text style={styles.detail}>🎧  Genre: {album.primaryGenreName}</Text>
+                    <Text style={styles.detail}>🎵 Songs: {album.trackCount}</Text>
+                    <Text style={styles.detail}>📅 Release Date: {new Date(album.releaseDate).toLocaleDateString()}</Text>
+                    <Text style={styles.detail}>💰 Price: ${album.collectionPrice}</Text>
+                </View>
+                
             <TouchableOpacity onPress={() => Linking.openURL(album.collectionViewUrl)}>
-            <Text style={{color: 'blue'}}>Watch in iTunes</Text>
+                <Text style={styles.link}>▶️ Watch in iTunes</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={saveFavoriteAlbum}>
-            <Text >❤️</Text>
+                
+            <TouchableOpacity style={styles.favButton}  onPress={saveFavoriteAlbum}>
+                <Text style={styles.favText}>❤️</Text>
             </TouchableOpacity>
            
             <Button title="Back" onPress={() => navigation.goBack()}/>
-            
+            </ScrollView>
         </SafeAreaView>
     )
 }
@@ -63,28 +68,71 @@ export default function AlbumDetail({route, navigation}){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20
+        backgroundColor: "#121212",
+    },
+    content: {
+        alignItems: "center",
+        padding: 20,
     },
     image: {
-        width: '100%',
-        height: 200,
-        marginBottom: 20
+        width: 220,
+        height: 220,
+        borderRadius: 12,
+        marginBottom: 20,
     },
     title: {
-        textAlign: 'center',
-        fontSize: 22,
-        fontWeight: 'bold',
-         marginBottom: 20
+        fontSize: 24,
+        color: "#fff",
+        fontWeight: "bold",
+        textAlign: "center",
+        marginBottom: 6,
     },
-    description: {
-        fontSize: 16,
-        marginBottom: 20
-    },
-    rating: {
+    artist: {
         fontSize: 18,
-        marginBottom: 20
-    }
+        color: "#bbb",
+        marginBottom: 20,
+    },
+    detailsBox: {
+        backgroundColor: "#1e1e1e",
+        padding: 16,
+        borderRadius: 10,
+        width: "100%",
+        marginBottom: 20,
+    },
+    detail: {
+        color: "#eee",
+        fontSize: 16,
+        marginBottom: 8,
+    },
+    link: {
+        fontSize: 16,
+        color: "#3A86FF",
+        marginBottom: 20,
+        textDecorationLine: "underline",
+    },
+    favButton: {
+        backgroundColor: "#ffffff",
+        paddingVertical: 12,
+        paddingHorizontal: 24,
+        borderRadius: 10,
+        marginBottom: 15,
+    },
+    favText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "600",
+    },
+    backButton: {
+        borderColor: "#888",
+        borderWidth: 1,
+        paddingVertical: 10,
+        paddingHorizontal: 24,
+        borderRadius: 10,
+    },
+    backText: {
+        color: "#bbb",
+        fontSize: 16,
+    },
 });
+
 

@@ -17,27 +17,15 @@ export default function SettingsScreen({navigation}){
       .catch((error) => console.error('Sign-out error:', error));
   };
 
-    /*const goToOrder = () =>{
-        navigation.navigate("Order");
-    }
-
-    const goToLogin = () => {
-        navigation.reset({
-            index: 0,
-            routes: [{ name: "Login" }], 
-        });
-    }
-    const goToUs = () => {
-        navigation.navigate("US");
-    }*/
+ 
 
     
     return(
         <ImageBackground  style={styles.backgroundImage}>
-        <SafeAreaView>
+        <SafeAreaView style={styles.overlay}>
 
             <View style={styles.container}>
-                <TouchableOpacity style={styles.buttoni} onPress={signOut}>
+                <TouchableOpacity style={styles.glassButton} onPress={signOut}>
                     <Text style={styles.buttonText}>Sign Out</Text>
                 </TouchableOpacity>
             </View>
@@ -53,58 +41,49 @@ export default function SettingsScreen({navigation}){
 const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
-        resizeMode: 'cover', // Ajusta la imagen para cubrir toda la pantalla
-        justifyContent: 'center', 
-        height: '100%'
-      },
-    image: {
-        width: 125, 
-        height: 125,
-        marginBottom: 20
-
+        width: "100%",
+        height: "100%",
+        justifyContent: "center",
     },
-    
-    container:{
-        justifyContent:'space-around',
-        alignItems:'center', 
-        paddingBottom:10
+    overlay: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.5)", // semi-transparent overlay
+        justifyContent: "center",
+        padding: 24,
     },
-    button: {
-        backgroundColor: 'white',
-        paddingVertical: 10,
-        paddingHorizontal: 35,
-        borderRadius: 100,
-        borderWidth: 2, // Ancho del borde
-        borderColor: 'orange', // Color del borde
-        shadowColor: '#000', // Sombra para mejorar visibilidad en iOS
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-        elevation: 2,
-        marginTop:60,
-        alignItems:'center',
-        marginEnd:0
-      },
-      buttoni: {
-        backgroundColor: 'white',
-        paddingVertical: 10,
-        paddingHorizontal: 35,
-        borderRadius: 100,
-        borderWidth: 1, // Ancho del borde
-        borderColor: 'orange', // Color del borde
-        shadowColor: '#000', // Sombra para mejorar visibilidad en iOS
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-        elevation: 2,
-        marginTop:-30,
-        alignItems:'center',
-        marginEnd:0
-      },
-      buttonText: {
-        color: 'black',
-        fontSize: 25,
-      }
+    container: {
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 20,
+    },
+    header: {
+        fontSize: 36,
+        fontWeight: "bold",
+        color: "#fff",
+        marginBottom: 40,
+    },
+    glassButton: {
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        borderRadius: 16,
+        paddingVertical: 18,
+        paddingHorizontal: 40,
+        borderWidth: 1,
+        borderColor: "rgba(255, 255, 255, 0.3)",
+        backdropFilter: "blur(10px)", // Este efecto solo en web/native con soporte
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+    buttonText: {
+        fontSize: 20,
+        fontWeight: "600",
+        color: "#ffffff",
+        textShadowColor: "rgba(0, 0, 0, 0.75)",
+        textShadowOffset: { width: 0, height: 1 },
+        textShadowRadius: 1,
+    },
 });
 
 

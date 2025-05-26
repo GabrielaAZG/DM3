@@ -65,13 +65,14 @@ export default function FavoriteAlbum({navigation}){
         
         <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Details', {album: item})}>
             <Image source={{uri: item.artworkUrl100}} style={styles.image}/>
-            <Text style={styles.title}>{item.collectionName}</Text>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('Edit', {album: item, setAlbums})}>
-                    <Text style={styles.buttonText}>🖋️</Text>
+            <Text style={styles.albumTitle}>{item.collectionName}</Text>
+            <View style={styles.actionButtons}>
+                <TouchableOpacity style={[styles.iconButton, { backgroundColor: "gray" }]}
+                                  onPress={() => navigation.navigate('Edit', {album: item, setAlbums})}>
+                    <Text style={styles.icon}>✎</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.deleteButton} onPress={() => deleteAlbum(item.id)}>
-                    <Text style={styles.buttonText}>🗑️</Text>
+                <TouchableOpacity style={[styles.iconButton, { backgroundColor: "#EF233C" }]} onPress={() => deleteAlbum(item.id)}>
+                    <Text style={styles.icon}>✘</Text>
                 </TouchableOpacity>
             </View>
 
@@ -81,11 +82,12 @@ export default function FavoriteAlbum({navigation}){
     return(
         
         <SafeAreaView style={styles.container}>
-            
+            <Text style={styles.screenTitle}>♥</Text>
             <FlatList
             data={albums}
             renderItem={renderAlbum}
             keyExtractor={(item) => item.id}
+            contentContainerStyle={{ paddingBottom: 100 }}
             />
         </SafeAreaView>
     );
@@ -94,56 +96,51 @@ export default function FavoriteAlbum({navigation}){
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1, 
-        backgroundColor: '#fff',
-        padding: 10
+        flex: 1,
+        paddingHorizontal: 16,
+    },
+    screenTitle: {
+        fontSize: 26,
+        color: "#000000",
+        fontWeight: "bold",
+        marginVertical: 20
+        
     },
     card: {
-        marginBottom: 20,
-        backgroundColor: '#f8f8f8',
-        borderRadius: 10,
-        overflow: 'hidden',
-        borderColor: '#ddd',
-        borderWidth: 1
-    }, 
+        backgroundColor: "#e0e0e0",
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 16,
+        shadowColor: "#000",
+        shadowOpacity: 0.3,
+        shadowOffset: { width: 0, height: 4 },
+        shadowRadius: 8,
+        elevation: 5,
+    },
     image: {
-        width: '100%',
-        height: 150
+        width: "100%",
+        height: 180,
+        borderRadius: 12,
     },
-    title: {
+    albumTitle: {
+        color: "#000000",
         fontSize: 18,
-        fontWeight:'bold',
-        padding: 10
+        fontWeight: "600",
+        marginTop: 12,
+        marginBottom: 8,
+        textAlign: "center",
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 10
+    actionButtons: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        marginTop: 10,
     },
-    editButton: {
-        backgroundColor: '#4CAF50',
+    iconButton: {
         padding: 10,
-        borderRadius: 5
+        borderRadius: 10,
     },
-    deleteButton: {
-        backgroundColor: '#F44336',
-        padding: 10,
-        borderRadius: 5
+    icon: {
+        fontSize: 18,
+        color: "#fff",
     },
-    buttonText: {
-        color: '#fff',
-        fontWeight: 'bold'
-    },
-    addButton: {
-        backgroundColor: '#2196F3',
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 20
-    },
-    addButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        textAlign: 'center'
-    }
-
 });

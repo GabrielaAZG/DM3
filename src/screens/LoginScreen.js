@@ -1,5 +1,17 @@
 import React, {useState} from "react";
-import {View, Text, TextInput, SafeAreaView, Image, StyleSheet, Alert, Platform, BackHandler,TouchableOpacity} from "react-native";
+import {
+    View,
+    Text,
+    TextInput,
+    SafeAreaView,
+    StyleSheet,
+    Alert,
+    Platform,
+    BackHandler,
+    TouchableOpacity,
+    KeyboardAvoidingView,
+    Image,
+} from "react-native";
 import {auth} from "../../firebase"; // 
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 
@@ -30,7 +42,7 @@ export default function LoginScreen({navigation}){
             console.log("Signed in!");
             const user = userCredential.user;
             console.log(user);
-            navigation.replace("Principal Menu");
+            navigation.replace("Menu");
         })
         .catch(error => {
             console.log(error);
@@ -60,32 +72,34 @@ export default function LoginScreen({navigation}){
 
     return(
         
-        <SafeAreaView style={styles.fondo}>
-            
-                
+        <SafeAreaView style={styles.safeArea}>
            
+            <KeyboardAvoidingView behavior="padding" style={styles.container}>
+
+                <Image
+                    source={require('../../assets/login.png')} // Asegúrate de tener esta imagen
+                    style={styles.image}
+                    resizeMode="contain"
+                />
+                <TextInput style={styles.input} placeholder="Email" value= {email} onChangeText={setEmail} placeholderTextColor="#aaa"/>
+                <TextInput style={styles.input} placeholder="Password" value= {password} onChangeText={setPassword} placeholderTextColor="#aaa"/>
+                
             
-            <View style={styles.container} >
-                
-                <TextInput style={styles.input} placeholder="USER" value= {email} onChangeText={setEmail}/>
-                <TextInput style={styles.inputp} placeholder="PASSWORD" value= {password} onChangeText={setPassword}/>
-                
-            </View>
-            <View style={[styles.container,styles.buttonText]} >
-                <TouchableOpacity style={[styles.button,styles.buttonText]} onPress={handleSignIn} >
-                    <Text style={styles.buttonText}>LOGIN</Text>
+            
+                <TouchableOpacity style={styles.button} onPress={handleSignIn} >
+                    <Text style={styles.buttonText}>Log In</Text>
                 </TouchableOpacity>
               
-                <TouchableOpacity style={styles.button} onPress={handleCreateAccount}>
-                    <Text style={styles.buttonText}>SIGN UP</Text>
+                <TouchableOpacity style={styles.secondaryButton} onPress={handleCreateAccount}>
+                    <Text style={styles.buttonText}>Create Account</Text>
                 </TouchableOpacity>
-            </View>
-            <View>
-            <TouchableOpacity style={styles.exit} onPress={exitApp}>
-                <Text>🔙</Text>
+            
+            
+            <TouchableOpacity style={styles.exitButton}  onPress={exitApp}>
+                <Text style={styles.exitText}>Exit App</Text>
             </TouchableOpacity>
-            </View>
-
+            
+            </KeyboardAvoidingView>
         </SafeAreaView>
              
     
@@ -94,110 +108,77 @@ export default function LoginScreen({navigation}){
 
 
 const styles = StyleSheet.create({
-    backgroundImage: {
+    safeArea: {
         flex: 1,
-        resizeMode: 'cover', // Ajusta la imagen para cubrir toda la pantalla
-        justifyContent: 'center', 
-        height: '120%'
-      },
-    image: {
-        width: 500, 
-        height: 300,
-        marginTop:10,
-        justifyContent:'flex-end',
-        alignItems:'center', 
-
+        backgroundColor: "#0F0F0F",
     },
-    imagecontainer: {
-        marginTop:10,
-        justifyContent:'flex-end',
-        alignItems:'center', 
-
+    container: {
+        flex: 1,
+        padding: 20,
+        justifyContent: "center",
+        marginTop:-120
     },
-    TexView:{
-        justifyContent:'center',
-        fontSize:30,
-        textAlign:'center' 
+    title: {
+        color: "#fff",
+        fontSize: 32,
+        fontWeight: "bold",
+        marginBottom: 10,
     },
-    title:{
-        justifyContent:'center',
-        fontSize:25,
-        textAlign:'center',
-        marginTop:10 
+    subtitle: {
+        color: "#aaa",
+        fontSize: 16,
+        marginBottom: 40,
     },
-    input:{
-        width:300,
-        height: 45,
-        fontSize: 20,
-        borderWidth:1,
-        borderColor: '#ccc',
-        borderRadius:15,
-        padding:10,
-        marginTop: 20,
-        marginBottom:10,
-        justifyContent:'space-around',
-        alignContent:'center',
-        backgroundColor:'white'
-    },
-    inputp:{
-        width:300,
-        height: 45,
-        fontSize: 20,
-        borderWidth:1,
-        borderColor: '#ccc',
-        borderRadius:15,
-        padding:10,
-        marginTop: 1,
-        marginBottom:15,
-        justifyContent:'space-around',
-        alignContent:'center',
-        backgroundColor:'white'
-    },
-    inputText:{
-
-    },
-    fondo:{
-        backgroundColor:'black',
-        height:'100%'
-    },
-    container:{
-        justifyContent:'flex-end',
-        alignItems:'center', 
-        paddingBottom:1
+    input: {
+        backgroundColor: "#1C1C1E",
+        color: "#fff",
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        borderRadius: 12,
+        fontSize: 16,
+        marginBottom: 20,
+        borderColor: "#333",
+        borderWidth: 1,
     },
     button: {
-        backgroundColor: 'red',
+        backgroundColor: "#01aad0",
         paddingVertical: 15,
-        paddingHorizontal: 25,
-        borderRadius: 100,
-        borderWidth: 0, // Ancho del borde
-        borderColor: 'black', // Color del borde
-        shadowColor: '#000', // Sombra para mejorar visibilidad en iOS
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-        elevation: 2,
-        marginTop:10,
-        alignItems:'center',
-        marginEnd:0,
-        width:200
-      },
-      buttonText: {
-        color: 'white',
+        borderRadius: 12,
+        alignItems: "center",
+        marginBottom: 15,
+    },
+    buttonText: {
+        color: "#fff",
         fontSize: 16,
-        fontWeight:'bold'
-      },
-      containerinput:{
-        marginTop:30
-      },
-      exit:{
-        backgroundColor: 'red',
-        padding: 10,
-        borderRadius: 5,
-        marginBottom: 10,
-        marginTop:50,
-        width:40
-        
+        fontWeight: "bold",
+    },
+    secondaryButton: {
+        borderColor: "#01aad0",
+        borderWidth: 1,
+        paddingVertical: 15,
+        borderRadius: 12,
+        alignItems: "center",
+        marginBottom: 20,
+    },
+    secondaryButtonText: {
+        color: "#01aad0",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    exitButton: {
+        alignItems: "center",
+        paddingVertical: 10,
+    },
+    exitText: {
+        color: "#888",
+        fontSize: 14,
+    },
+    image: {
+        width: 300,
+        height: 200,
+        alignItems: "center",
+        marginLeft: 50,
+        marginBottom:50
     },
 });
 

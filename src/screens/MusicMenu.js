@@ -1,124 +1,67 @@
 import React from "react";
-import {View, Text, SafeAreaView, StyleSheet,TouchableOpacity,ImageBackground} from "react-native";
-
+import {View, Text, SafeAreaView, StyleSheet,TouchableOpacity,Image} from "react-native";
+import { Ionicons } from '@expo/vector-icons';
 export default function PrincipalMenu(props){
     
-    const {navigation} = props;
-    
 
-    const goToSearchAlbum = () =>{
-        navigation.navigate("Search Album");
-    }
-
-    const goToFavoriteAlbums = () =>{
-        navigation.navigate("Favorite Albums");
-    }
-     const goToList = () =>{
-        navigation.navigate("List");
-    }
-    const goToSettings = () =>{
-        navigation.navigate("Settings");
-    }
-
-    /*const goToOrder = () =>{
-        navigation.navigate("Order");
-    }
-
-    const goToLogin = () => {
-        navigation.reset({
-            index: 0,
-            routes: [{ name: "Login" }], 
-        });
-    }
-    const goToUs = () => {
-        navigation.navigate("US");
-    }*/
 
     
     return(
-        <ImageBackground  style={styles.backgroundImage}>
-        <SafeAreaView>
+        <View style={styles.container}>
+            <Ionicons name="musical-notes" size={64} color="#ff6b81" />
 
-            <View style={styles.container}>
-                <TouchableOpacity style={styles.buttoni} onPress={goToSearchAlbum}>
-                    <Text style={styles.buttonText}>Search</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttoni} onPress={goToFavoriteAlbums}>
-                    <Text style={styles.buttonText}>Favorite Albums</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttoni} onPress={goToList}>
-                    <Text style={styles.buttonText}>List</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttoni} onPress={goToSettings}>
-                    <Text style={styles.buttonText}>Settings</Text>
-                </TouchableOpacity>
+            <Text style={styles.title}>Welcome to MusicTecP</Text>
+
+            <Text style={styles.subtitle}>
+                Explore your favorite albums, artists, and songs.
+                 </Text>
+
+            <Image
+                source={require('../../assets/Music.png')} // Asegúrate de tener esta imagen
+                style={styles.image}
+                resizeMode="contain"
+            />
+
+            <View style={styles.iconRow}>
+                <Ionicons name="headset" size={40} color="#888" />
+                <Ionicons name="disc" size={40} color="#888" />
+                <Ionicons name="radio" size={40} color="#888" />
             </View>
-            
-            
-            
-        </SafeAreaView>
-        </ImageBackground>
-    )
+        </View>
+    );
 }
 
 
 const styles = StyleSheet.create({
-    backgroundImage: {
+    container: {
         flex: 1,
-        resizeMode: 'cover', // Ajusta la imagen para cubrir toda la pantalla
-        justifyContent: 'center', 
-        height: '100%'
-      },
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 20,
+    },
+    title: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#333',
+        marginTop: 20,
+        textAlign: 'center',
+    },
+    subtitle: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+        marginTop: 10,
+        marginBottom: 30,
+    },
     image: {
-        width: 125, 
-        height: 125,
-        marginBottom: 20
-
+        width: 300,
+        height: 200,
+        marginBottom: 40,
     },
-    
-    container:{
-        justifyContent:'space-around',
-        alignItems:'center', 
-        paddingBottom:10
+    iconRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '60%',
     },
-    button: {
-        backgroundColor: 'white',
-        paddingVertical: 10,
-        paddingHorizontal: 35,
-        borderRadius: 100,
-        borderWidth: 2, // Ancho del borde
-        borderColor: 'orange', // Color del borde
-        shadowColor: '#000', // Sombra para mejorar visibilidad en iOS
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-        elevation: 2,
-        marginTop:60,
-        alignItems:'center',
-        marginEnd:0
-      },
-      buttoni: {
-        backgroundColor: 'white',
-        paddingVertical: 10,
-        paddingHorizontal: 35,
-        borderRadius: 100,
-        borderWidth: 1, // Ancho del borde
-        borderColor: 'orange', // Color del borde
-        shadowColor: '#000', // Sombra para mejorar visibilidad en iOS
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.5,
-        shadowRadius: 2,
-        elevation: 2,
-        marginTop:-30,
-        alignItems:'center',
-        marginEnd:0
-      },
-      buttonText: {
-        color: 'black',
-        fontSize: 25,
-      }
 });
-
-
-
-
